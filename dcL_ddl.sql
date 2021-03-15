@@ -1,4 +1,3 @@
-drop login TestUser;
 
 CREATE DATABASE TestDb;
 GO
