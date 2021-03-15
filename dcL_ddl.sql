@@ -6,15 +6,15 @@ CREATE SCHEMA TestSchema;
 GO
 
 CREATE TABLE TestTable(		Id			INT NOT NULL,
-							Name		VARCHAR(20),
+							Name 		VARCHAR(20),
 							IsSold		BIT,
-							InvoiceDate DATE	);
+							InvoiceDate	DATE	);
 GO
 
 INSERT INTO TestTable
-VALUES	(1,	'Boat',		1, '2020-11-08'),
-		(2,	'Auto',		0, '2020-11-09'),
-		(3,	'Plane', null, '2020-12-09');
+VALUES	(1,	'Boat',		1,	'2020-11-08'),
+		(2,	'Auto',		0,	'2020-11-09'),
+		(3,	'Plane',	null,	'2020-12-09');
 GO
 
 USE TestDb;
