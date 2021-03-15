@@ -2,19 +2,19 @@
 CREATE DATABASE TestDb;
 GO
 
-CREATE SCHEMA TestSchema;
+USE TestDb;
 GO
-
-CREATE TABLE TestTable(		Id			INT NOT NULL,
-							Name 		VARCHAR(20),
+CREATE SCHEMA TestSchema
+	CREATE TABLE TestTable(		Id			INT NOT NULL,
+							Name		VARCHAR(20),
 							IsSold		BIT,
-							InvoiceDate	DATE	);
+							InvoiceDate DATE	);
 GO
 
 INSERT INTO TestTable
-VALUES	(1,	'Boat',		1,	'2020-11-08'),
-		(2,	'Auto',		0,	'2020-11-09'),
-		(3,	'Plane',	null,	'2020-12-09');
+VALUES	(1,	'Boat',		1, '2020-11-08'),
+		(2,	'Auto',		0, '2020-11-09'),
+		(3,	'Plane', null, '2020-12-09');
 GO
 
 USE TestDb;
@@ -30,6 +30,7 @@ GO
 
 CREATE LOGIN TestUser 
 	WITH PASSWORD = 'MandrykA1608';
+
 USE TestDb;
 GO
 CREATE USER TestUser FOR LOGIN TestUser;
@@ -54,7 +55,7 @@ SELECT	*
 FROM	TestTable;
 GO
 
-GRANT SELECT ON OBJECT::TestTable TO TestUser;
+GRANT SELECT ON OBJECT::TestSchema.TestTable TO TestUser;
 GO
 EXECUTE AS USER = 'TestUser';
 GO
@@ -68,3 +69,4 @@ GO
 REVERT;
 GO
 DROP USER TestUser;
+
