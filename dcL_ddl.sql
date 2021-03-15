@@ -1,3 +1,4 @@
+drop login TestUser;
 
 CREATE DATABASE TestDb;
 GO
@@ -11,7 +12,7 @@ CREATE SCHEMA TestSchema
 							InvoiceDate DATE	);
 GO
 
-INSERT INTO TestTable
+INSERT INTO TestSchema.TestTable
 VALUES	(1,	'Boat',		1, '2020-11-08'),
 		(2,	'Auto',		0, '2020-11-09'),
 		(3,	'Plane', null, '2020-12-09');
@@ -52,7 +53,7 @@ GO
 USE TestDb;
 GO
 SELECT	* 
-FROM	TestTable;
+FROM	TestSchema.TestTable;
 GO
 
 GRANT SELECT ON OBJECT::TestSchema.TestTable TO TestUser;
@@ -63,7 +64,7 @@ GO
 USE TestDb;
 GO
 SELECT	* 
-FROM	TestTable;
+FROM	TestSchema.TestTable;
 GO
 
 REVERT;
