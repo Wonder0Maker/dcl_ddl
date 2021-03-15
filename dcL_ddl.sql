@@ -1,20 +1,23 @@
+
 CREATE DATABASE TestDb;
 GO
+
 CREATE SCHEMA TestSchema;
 GO
 
-CREATE TABLE TestTable(
-	Id INT NOT NULL,
-	Name VARCHAR(20),
-	IsSold BIT,
-	InvoiceDate DATE);
+CREATE TABLE TestTable(		Id			INT NOT NULL,
+							Name		VARCHAR(20),
+							IsSold		BIT,
+							InvoiceDate DATE	);
 GO
 
 INSERT INTO TestTable
-VALUES
-(1, 'Boat', 1, '2020-11-08'),
-(2,'Auto', 0, '2020-11-09'),
-(3,'Plane', null, '2020-12-09')GOUSE TestDb
+VALUES	(1,	'Boat',		1, '2020-11-08'),
+		(2,	'Auto',		0, '2020-11-09'),
+		(3,	'Plane', null, '2020-12-09');
+GO
+
+USE TestDb;
 GO
 EXEC sp_configure 'CONTAINED DATABASE AUTHENTICATION', 1;
 GO
@@ -25,35 +28,43 @@ GO
 ALTER DATABASE TestDb SET CONTAINMENT = PARTIAL;
 GO
 
-CREATE LOGIN TestUser WITH PASSWORD = 'MandrykA1608'
+CREATE LOGIN TestUser 
+	WITH PASSWORD = 'MandrykA1608';
+USE TestDb;
 GO
-CREATE USER TestUser FOR LOGIN TestUser
-GO
-
-GRANT CONNECT ON DATABASE::TestDb TO TestUser
-GO
-EXECUTE AS USER = 'TestUser'
-GO
-SELECT CURRENT_USER
+CREATE USER TestUser FOR LOGIN TestUser;
 GO
 
-SELECT * FROM TestTable
+GRANT CONNECT ON DATABASE::TestDb TO TestUser;
+GO
+EXECUTE AS USER = 'TestUser';
+GO
+SELECT	CURRENT_USER;
 GO
 
-REVERT
+
+REVERT;
 GO
-SELECT CURRENT_USER
-GO
-SELECT * FROM TestTable
+SELECT	CURRENT_USER;
 GO
 
-GRANT SELECT ON OBJECT::TestTable TO TestUser
+USE TestDb;
 GO
-EXECUTE AS USER = 'TestUser'
-GO
-SELECT * FROM TestTable
+SELECT	* 
+FROM	TestTable;
 GO
 
-REVERT
+GRANT SELECT ON OBJECT::TestTable TO TestUser;
 GO
-DROP USER TestUser
+EXECUTE AS USER = 'TestUser';
+GO
+
+USE TestDb;
+GO
+SELECT	* 
+FROM	TestTable;
+GO
+
+REVERT;
+GO
+DROP USER TestUser;
