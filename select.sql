@@ -29,4 +29,5 @@ SELECT	BusinessEntityID,
 		ShiftID
 FROM	HumanResources.EmployeeDepartmentHistory
 GROUP BY	BusinessEntityID, ShiftID
-HAVING	COUNT(BusinessEntityID + ShiftID) >= 2
+HAVING	COUNT(*) >= 2
+
