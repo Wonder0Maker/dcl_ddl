@@ -14,7 +14,7 @@ VALUES	(8, '2020-08-25');
 GO
 
 INSERT INTO	TestSchema.TestTable (id, Name)
-VALUES	(8, 'Scooter');
+VALUES	(9, 'Scooter');
 GO
 
 UPDATE	TestSchema.TestTable
