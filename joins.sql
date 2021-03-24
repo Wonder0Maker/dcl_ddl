@@ -16,9 +16,7 @@ SELECT	p.FirstName
 	FROM	HumanResources.Employee e
 	WHERE	p.BusinessEntityID = e.BusinessEntityID) 
 	AS	JobTitle
-FROM	Person.Person p 	
-JOIN	HumanResources.Employee AS e
-	ON	(p.BusinessEntityID = e.BusinessEntityID);
+FROM	Person.Person p;
 GO
 
 SELECT	p.FirstName
