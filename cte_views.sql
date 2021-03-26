@@ -19,23 +19,34 @@ FROM	Person.vPerson;
 GO
 
 -- Query 2
-WITH Emploee_CTE
+WITH	Person_CTE(BusinessEntityID, FirstName, LastName)
+AS
+(
+	SELECT
+		p.BusinessEntityID
+		, p.FirstName 
+		, p.LastName
+	FROM	Person.Person AS p
+),
+
+PersonPhone_CTE
 AS
 (
 	SELECT	
-		e.BusinessEntityID
-		, e.NationalIDNumber
-		, e.JobTitle
-		, p.FirstName
-		, p.LastName
-		, pp.PhoneNumber
-	FROM	HumanResources.Employee AS e
-	JOIN	Person.Person AS p
-		ON	e.BusinessEntityID = p.BusinessEntityID
-	LEFT JOIN	Person.PersonPhone AS pp
-		ON	e.BusinessEntityID = pp.BusinessEntityID
+		pp.BusinessEntityID
+		, pp.PhoneNumber 
+	FROM	Person.PersonPhone AS pp
 )
 
-SELECT	* 
-FROM	Emploee_CTE;
-GO
+SELECT	
+	e.BusinessEntityID
+	, e.NationalIDNumber
+	, e.JobTitle
+	, p.FirstName
+	, p.LastName
+	, pp.PhoneNumber
+FROM	HumanResources.Employee AS e
+JOIN	Person_CTE AS p
+	ON	e.BusinessEntityID = p.BusinessEntityID
+LEFT JOIN	PersonPhone_CTE AS pp
+	ON	e.BusinessEntityID = pp.BusinessEntityID
