@@ -10,11 +10,10 @@ SELECT
 	, mt.TotalDue
 FROM (
 	SELECT 
-		p.ProductID
-		, p.Name
-		, SUM(sod.UnitPrice) AS TotalDue
+		p.Name
+		, SUM(sod.LineTotal) AS TotalDue
 		, NTILE(10) OVER(
-		  ORDER BY	p.ProductID) AS PerRank
+		  ORDER BY	p.Name) AS PerRank
 	FROM	Sales.SalesOrderHeader AS soh
 	JOIN	Sales.SalesOrderDetail AS sod
 		ON	soh.SalesOrderID = sod.SalesOrderID
@@ -22,10 +21,9 @@ FROM (
 		ON	sod.ProductID = p.ProductID
 	WHERE	YEAR(soh.DueDate) = 2013 
 		AND MONTH(soh.DueDate) = 01
-	GROUP BY	p.ProductID, sod.UnitPrice, p.Name
+	GROUP BY	p.Name
 	)	AS mt
 WHERE	mt.PerRank BETWEEN 2 AND 9
-GROUP BY	mt.TotalDue, mt.Name
 
 ---------------------------------
 
@@ -45,16 +43,16 @@ FROM	(
 		  ORDER BY ListPrice) AS RowNumber
 	FROM	Production.Product 
 	WHERE	ProductSubcategoryID IS NOT NULL
-	GROUP BY	Name, ProductSubcategoryID, ListPrice
 	) AS mt
 WHERE	RowNumber = 1
+
 
 
 -----------------------------------
 
 -- QUERY 3
 
-SELECT	MAX(mt.ListPrice)
+SELECT	MAX(mt.ListPrice) AS MaxPrice
 FROM	(
 	SELECT 
 		Name
@@ -62,8 +60,7 @@ FROM	(
 		, DENSE_RANK() OVER(
 		  ORDER BY ListPrice DESC) AS RowNumber
 	FROM	Production.Product 
-	WHERE	Name LIKE 'Mountain-%'
-	GROUP BY	Name, ListPrice
+	WHERE	ProductSubcategoryID = 1
 	) AS mt
 WHERE	RowNumber = 2
 ------------------------------
@@ -72,16 +69,16 @@ WHERE	RowNumber = 2
  
 SELECT 
 	mt.ProductCategoryID
-	, mt.AvgSale
-	, mt.AvgSale
+	, mt.Sale
+	, (mt.Sale - mt.PrevSale)/mt.Sale as AvgSale
 FROM (
 	SELECT 
 		pc.ProductCategoryID
-		, YEAR(soh.DueDate) AS Year
-		, SUM(soh.TotalDue) AS Sale
-		, (SUM(soh.TotalDue) - LAG(SUM(soh.TotalDue)) OVER (
-		  ORDER BY	pc.ProductCategoryID)) / SUM(soh.TotalDue)
-		  AS AvgSale
+		, Year(soh.DueDate) as SoldYear
+		, SUM(sod.LineTotal) AS Sale 
+		, LAG(SUM(soh.TotalDue)) OVER (
+		  ORDER BY	pc.ProductCategoryID)
+		  AS PrevSale 
 	FROM	Sales.SalesOrderHeader AS soh
 	JOIN	Sales.SalesOrderDetail AS sod
 		ON	soh.SalesOrderID = sod.SalesOrderID
@@ -94,22 +91,23 @@ FROM (
 	WHERE	YEAR(soh.DueDate) between 2012 and 2013 
 	GROUP BY	pc.ProductCategoryID, Year(soh.DueDate)
 ) AS mt
-WHERE mt.Year = 2013
+WHERE mt.SoldYear = 2013
 -------------------------
 
 -- QUERY 5
 
 SELECT 
-	FORMAT(soh.DueDate,'dd-MM-yyyy')
+	FORMAT(soh.OrderDate,'dd-MM-yyyy') AS SaleDate
 	, FIRST_VALUE(MAX(sod.LineTotal)) OVER (
-	  PARTITION BY	soh.DueDate 
-	  ORDER BY soh.DueDate ) AS	MaxSale
+	  PARTITION BY	soh.OrderDate 
+	  ORDER BY soh.OrderDate ) AS	MaxSale
 FROM	Sales.SalesOrderHeader	AS soh
 JOIN	Sales.SalesOrderDetail	AS sod
 	ON	soh.SalesOrderID = sod.SalesOrderID
-WHERE	YEAR(soh.DueDate) = 2013 
-	AND MONTH(soh.DueDate) = 01
-GROUP BY soh.DueDate
+WHERE	YEAR(soh.OrderDate) = 2013 
+	AND MONTH(soh.OrderDate) = 01
+GROUP BY soh.OrderDate
+
 
 ----------------------------------
 
@@ -117,8 +115,7 @@ GROUP BY soh.DueDate
 
 SELECT 
 	ps.Name	AS SubCatName
-	, p.Name	AS ProdName
-	, FIRST_VALUE(COUNT(*)) OVER (
+	, FIRST_VALUE(p.Name) OVER (
 	  PARTITION BY	ps.Name
 	  ORDER BY	COUNT(p.Name) DESC) 
 	  AS	RowNumber
@@ -131,6 +128,5 @@ JOIN	Production.ProductSubcategory	AS ps
 	ON	p.ProductSubcategoryID = ps.ProductSubcategoryID
 WHERE	YEAR(soh.DueDate) = 2013 
 	AND	MONTH(soh.DueDate) = 01
-GROUP BY	p.Name , ps.Name
-
+GROUP BY ps.Name, p.Name
 
