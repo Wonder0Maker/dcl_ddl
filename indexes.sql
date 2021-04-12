@@ -31,17 +31,25 @@ GO
 SELECT FirstName
 ,LastName
 FROM dbo.Customer
-WHERE ModifiedDate = '2020-10-20';GO------------------------------------------------
--- Query 4CREATE TABLE dbo.Customer2
-(		CustomerID	INT,
-		AccountNumber	VARCHAR(10)
-			CONSTRAINT CI_Customer_ID
-				PRIMARY KEY CLUSTERED (CustomerID),		
+WHERE ModifiedDate = '2020-10-20';
+GO
+------------------------------------------------
+-- Query 4
+CREATE TABLE dbo.Customer2
+(		CustomerID	INT NOT NULL,
+		AccountNumber	VARCHAR(10) NOT NULL,		
 		FirstName	VARCHAR(50),
 		LastName	VARCHAR(50),
 		Email	VARCHAR(100),
 		ModifiedDate	DATE,
 );
+
+CREATE CLUSTERED INDEX CI_Customer_ID
+	ON	dbo.Customer2(AccountNumber);
+
+ALTER TABLE dbo.Customer2
+	ADD CONSTRAINT 
+		PK_CustomerID PRIMARY KEY NONCLUSTERED(CustomerID);
 GO
 -- DROP TABLE dbo.Customer2
 ------------------------------------------------
