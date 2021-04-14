@@ -61,8 +61,8 @@ EXEC SP_RENAME
 GO
 ------------------------------------------------
 -- Query 6
-ALTER TABLE dbo.Customer2
-DROP CONSTRAINT CI_CustomerID 
+
+DROP INDEX CI_CustomerID ON dbo.Customer2
 ------------------------------------------------
 -- Query 7
 CREATE UNIQUE NONCLUSTERED INDEX AK_Customer_Email
